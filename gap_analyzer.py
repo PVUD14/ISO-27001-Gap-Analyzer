@@ -1,4 +1,3 @@
-# ISO 27001 Gap Analyzer Placeholder
  (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
 diff --git a/gap_analyzer.py b/gap_analyzer.py
 index 7ca3291acb81fd1169332f4ef95fdedff77e8a09..43b56fc57d4fc8c13a2db0e12a20412271c4d2d0 100644
