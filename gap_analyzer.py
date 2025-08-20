@@ -88,3 +88,12 @@ index 7ca3291acb81fd1169332f4ef95fdedff77e8a09..43b56fc57d4fc8c13a2db0e12a204122
  
 EOF
 )
+if __name__ == "__main__":
+    try:
+        # Your main code logic call here
+        main()  # or whatever your script uses to start
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        import traceback
+        traceback.print_exc()
+        exit(1)
