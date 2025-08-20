@@ -1,0 +1,21 @@
+ (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
+diff --git a//dev/null b/iso_27001_controls.json
+index 0000000000000000000000000000000000000000..7c9c4cce1170433fb734e9539cae0fc39f513f88 100644
+--- a//dev/null
++++ b/iso_27001_controls.json
+@@ -0,0 +1,12 @@
++[
++  {"id": "A.5.1.1", "description": "Policies for information security"},
++  {"id": "A.5.1.2", "description": "Review of the policies for information security"},
++  {"id": "A.6.1.1", "description": "Information security roles and responsibilities"},
++  {"id": "A.6.1.2", "description": "Segregation of duties"},
++  {"id": "A.6.1.3", "description": "Contact with authorities"},
++  {"id": "A.6.1.4", "description": "Contact with special interest groups"},
++  {"id": "A.6.1.5", "description": "Information security in project management"},
++  {"id": "A.7.1.1", "description": "Screening"},
++  {"id": "A.7.1.2", "description": "Terms and conditions of employment"},
++  {"id": "A.7.2.2", "description": "Information security awareness, education and training"}
++]
+ 
+EOF
+)
