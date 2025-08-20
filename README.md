@@ -1,3 +1,4 @@
+ (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
 diff --git a/README.md b/README.md
 index 16e3ad51bb7b933b302eeb737cc95af9ee4911ba..433b106b7662790ef0b41f1f57e46bb1ab70a2ee 100644
 --- a/README.md
@@ -18,3 +19,6 @@ index 16e3ad51bb7b933b302eeb737cc95af9ee4911ba..433b106b7662790ef0b41f1f57e46bb1
 +The script compares the supplied implementation data against the controls
 +listed in `iso_27001_controls.json` and prints any controls that are
 +missing or not met.
+ 
+EOF
+)
