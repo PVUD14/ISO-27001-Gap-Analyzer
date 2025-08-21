@@ -2,19 +2,40 @@ name: ISO 27001 Gap Analyzer
 
 on:
   workflow_dispatch:
+    inputs:
+      implementation_path:
+        description: "Path to implemented controls JSON"
+        required: false
+        default: "samples/implemented_controls.json"
+      controls_path:
+        description: "Path to ISO controls JSON"
+        required: false
+        default: "samples/iso_27001_controls.json"
+      push_reports:
+        description: "Commit reports to gh-pages-reports branch (true/false)"
+        required: false
+        default: "false"
   push:
     branches: [ "main" ]
     paths:
       - "gap_analyzer.py"
       - "iso_27001_controls.json"
       - "implemented_controls.json"
+      - "samples/**"
       - ".github/workflows/gap.yml"
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: write
+
 jobs:
   analyze:
     runs-on: ubuntu-latest
+    concurrency:
+      group: iso-gap-${{ github.ref }}
+      cancel-in-progress: true
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,13 +50,30 @@ jobs:
           python -V
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
+      - name: Resolve inputs
+        id: paths
+        shell: bash
+        run: |
+          impl="${{ github.event.inputs.implementation_path }}"
+          ctrls="${{ github.event.inputs.controls_path }}"
+          if [ -z "$impl" ]; then impl="samples/implemented_controls.json"; fi
+          if [ -z "$ctrls" ]; then ctrls="samples/iso_27001_controls.json"; fi
+          echo "impl=$impl"  >> "$GITHUB_OUTPUT"
+          echo "ctrls=$ctrls" >> "$GITHUB_OUTPUT"
+          mkdir -p reports
+
       - name: Run analyzer
         run: |
           python gap_analyzer.py \
-            --implementation implemented_controls.json \
-            --controls iso_27001_controls.json \
+            --implementation "${{ steps.paths.outputs.impl }}" \
+            --controls "${{ steps.paths.outputs.ctrls }}" \
             --out-json reports/gap_report.json \
             --out-md reports/gap_report.md
+
+      - name: Verify outputs exist
+        run: |
+          test -s reports/gap_report.json
+          test -s reports/gap_report.md
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -43,9 +81,21 @@ jobs:
           name: iso27001-gap-report
           path: reports/*
 
-      # OPTIONAL: push reports to a branch
+      - name: Preview Markdown (first 80 lines)
+        if: always()
+        run: |
+          echo "---- gap_report.md (preview) ----"
+          head -n 80 reports/gap_report.md || true
+
+      - name: Decide whether to push reports
+        id: pushflag
+        run: |
+          flag="${{ github.event.inputs.push_reports }}"
+          if [ -z "$flag" ]; then flag="false"; fi
+          echo "flag=$flag" >> "$GITHUB_OUTPUT"
+
       - name: Commit reports to gh-pages-reports
-        if: ${{ github.ref == 'refs/heads/main' }}
+        if: ${{ steps.pushflag.outputs.flag == 'true' && github.ref == 'refs/heads/main' }}
         run: |
           BRANCH=gh-pages-reports
           git config user.name "github-actions"
