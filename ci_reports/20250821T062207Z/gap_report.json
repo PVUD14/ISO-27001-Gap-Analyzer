@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "generated_at": "2025-08-21T06:22:06Z",
+    "controls": "samples/iso_27001_controls.json",
+    "implementation": "samples/implemented_controls.json",
+    "tool": "iso27001-gap-analyzer",
+    "version": "1.1.0"
+  },
+  "summary": {
+    "total_controls": 5,
+    "implemented": 2,
+    "gaps": 3
+  },
+  "results": [
+    {
+      "id": "A.5.1",
+      "title": "Information Security Policies",
+      "implemented": true
+    },
+    {
+      "id": "A.6.1",
+      "title": "Organization of Information Security",
+      "implemented": false
+    },
+    {
+      "id": "A.7.1",
+      "title": "Human Resource Security",
+      "implemented": true
+    },
+    {
+      "id": "A.8.1",
+      "title": "Asset Management",
+      "implemented": false
+    },
+    {
+      "id": "A.9.1",
+      "title": "Access Control",
+      "implemented": false
+    }
+  ],
+  "gaps": [
+    "A.6.1",
+    "A.8.1",
+    "A.9.1"
+  ]
+}
