@@ -1,0 +1,59 @@
+name: ISO 27001 Gap Analyzer
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "gap_analyzer.py"
+      - "iso_27001_controls.json"
+      - "implemented_controls.json"
+      - ".github/workflows/gap.yml"
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install (no external deps)
+        run: |
+          python -V
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run analyzer
+        run: |
+          python gap_analyzer.py \
+            --implementation implemented_controls.json \
+            --controls iso_27001_controls.json \
+            --out-json reports/gap_report.json \
+            --out-md reports/gap_report.md
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: iso27001-gap-report
+          path: reports/*
+
+      # OPTIONAL: push reports to a branch
+      - name: Commit reports to gh-pages-reports
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          BRANCH=gh-pages-reports
+          git config user.name "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git fetch origin $BRANCH || true
+          git checkout -B $BRANCH
+          mkdir -p ci_reports
+          cp -r reports/* ci_reports/
+          git add ci_reports
+          git commit -m "CI: update gap reports $(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "No changes"
+          git push origin $BRANCH
