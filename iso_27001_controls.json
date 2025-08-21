@@ -1,9 +1,17 @@
 {
-  "controls": [
-    "A.5.1 Information Security Policies",
-    "A.6.1 Organization of Information Security",
-    "A.7.1 Human Resource Security",
-    "A.8.1 Asset Management",
-    "A.9.1 Access Control"
-  ]
+  "A.5.1": {
+    "title": "Information Security Policies"
+  },
+  "A.6.1": {
+    "title": "Organization of Information Security"
+  },
+  "A.7.1": {
+    "title": "Human Resource Security"
+  },
+  "A.8.1": {
+    "title": "Asset Management"
+  },
+  "A.9.1": {
+    "title": "Access Control"
+  }
 }
