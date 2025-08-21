@@ -1,6 +1,7 @@
 {
-  "controls": [
-    "A.5.1 Information Security Policies",
-    "A.7.1 Human Resource Security"
-  ]
+  "A.5.1": true,
+  "A.6.1": false,
+  "A.7.1": true,
+  "A.8.1": false,
+  "A.9.1": false
 }
